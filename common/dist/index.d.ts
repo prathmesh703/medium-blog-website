@@ -25,15 +25,12 @@ export declare const signinschema: z.ZodObject<{
 export declare const createblogschema: z.ZodObject<{
     title: z.ZodString;
     content: z.ZodString;
-    id: z.ZodNumber;
 }, "strip", z.ZodTypeAny, {
     title: string;
     content: string;
-    id: number;
 }, {
     title: string;
     content: string;
-    id: number;
 }>;
 export type SignupInput = z.infer<typeof signupschema>;
 export type SigninInput = z.infer<typeof signinschema>;

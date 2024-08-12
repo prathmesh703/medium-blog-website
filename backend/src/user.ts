@@ -13,7 +13,9 @@ export const userRoute=new Hono<{
 }>();
 
 userRoute.post('/signup', async (c) => {
+  console.log("hii");
     const body=await c.req.json();
+    console.log("after");
     const {success}=signupschema.safeParse(body);
      if(!success){
        c.status(401)
@@ -26,14 +28,15 @@ userRoute.post('/signup', async (c) => {
     try {
     const user= await  prisma.user.create({
         data:{
-          email: body.username,
+          email: body.email,
           password:body.password,
           name:body.name
          
         }
       })
       const jwt=await sign({
-        id:user.id
+        id:user.id,
+        name:user.name
       },c.env.JWT_SECRET)
       return c.text(jwt)
   
@@ -68,7 +71,8 @@ userRoute.post('/signup', async (c) => {
       })
       if(user){
         const jwt=await sign({
-          id:user.id
+          id:user.id,
+          name:user.name
         },c.env.JWT_SECRET)
         return  c.text(jwt)
         return c.text("logged in")

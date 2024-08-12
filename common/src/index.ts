@@ -13,7 +13,7 @@ export const signinschema=z.object({
 export const createblogschema=z.object({
     title:z.string(),
     content:z.string(),
-    id:z.number()
+    
 })
 
 

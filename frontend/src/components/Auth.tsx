@@ -3,18 +3,23 @@ import axios from "axios";
 import { ChangeEvent, ChangeEventHandler, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "./config";
+import  { decode, Jwt, verify } from "jsonwebtoken";
 
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const [postInputs, setpostInputs] = useState<SignupInput>({
-    name: "",
     email: "",
     password: "",
+    name: ""
   });
 const navigate=useNavigate();
   async function sendRequst() {
     try {
+     
+     
         const response= await axios.post(`${BACKEND_URL}/api/v1/user/${type==="signin"?"signin":"signup"}`,postInputs)
+        
         const token=response.data;
+       
         localStorage.setItem("token",token);
         navigate("/blogs")
         
@@ -34,13 +39,13 @@ const navigate=useNavigate();
           <div className="text-slate-400 text-center ">{type==="signin"?"Create an account":" already have an account?"}
             
            
-            <Link className="p-2" to={type==="signin"?"/signup":"/signin"}>{type==="signin"?"signup":"signin"}
+            <Link className="p-2" to={type==="signin"?"/signup":"/"}>{type==="signin"?"signup":"signin"}
               
             </Link>
           </div>
         </div>
         <div className="pt-4 ">
-          <LablledInput
+          {type==="signup"?<LablledInput
             label="Name"
             placeholder="prathmesh kolpe"
             onChange={(e) => {
@@ -49,14 +54,14 @@ const navigate=useNavigate();
                 name: e.target.value,
               });
             }}
-          />
+          />:null}
           <LablledInput
             label="Email"
             placeholder="kolpe@gmail.com"
             onChange={(e) => {
               setpostInputs({
                 ...postInputs,
-                name: e.target.value,
+                email: e.target.value,
               });
             }}
           />
@@ -67,7 +72,7 @@ const navigate=useNavigate();
             onChange={(e) => {
               setpostInputs({
                 ...postInputs,
-                name: e.target.value,
+                password: e.target.value,
               });
             }}
             type="password"

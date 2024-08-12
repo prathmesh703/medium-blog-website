@@ -30,6 +30,7 @@ blogroute.use("/*", async (c,next) => {
     const body=await c.req.json();
 
     const authorid=c.get("id")
+    console.log(body);
     const {success}=createblogschema.safeParse(body)
     if(!success){
       c.status(401)
@@ -83,7 +84,18 @@ blogroute.use("/*", async (c,next) => {
         datasourceUrl: c.env?.DATABASE_URL,
       }).$extends(withAccelerate())
       try {
-        const post= await prisma.post.findMany({})
+        const post= await prisma.post.findMany({
+          select:{
+            content:true,
+            title:true,
+            id:true,
+            author:{
+              select:{
+                name:true
+              }
+            }
+          }
+        })
         return c.json({
           post
         })
@@ -100,7 +112,7 @@ blogroute.use("/*", async (c,next) => {
 
   blogroute.get('/:id', async (c) => {
     const id=c.req.param("id")
-    const body=await c.req.json();
+    
     const prisma =  new PrismaClient({
         datasourceUrl: c.env?.DATABASE_URL,
       }).$extends(withAccelerate())
@@ -109,6 +121,15 @@ blogroute.use("/*", async (c,next) => {
       const post= await prisma.post.findUnique({
         where:{
          id:id
+       },
+       select:{
+        title:true,
+        content:true,
+        author:{
+          select:{
+            name:true
+          }
+        }
        }
        })
      return c.json({
